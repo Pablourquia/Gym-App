@@ -1,11 +1,15 @@
-from django.urls import path
-from .views import UserList, UserDetail, ExerciseList, ExerciseDetail, RoutineList, RoutineDetail
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from . import views
+
+router = DefaultRouter()
+router.register('users', views.UserViewSet)
+router.register('exercises', views.ExerciseViewSet)
+router.register('routines', views.RoutineViewSet)
+router.register('routine-sessions', views.RoutineSessionViewSet)
+router.register('routine-exercises', views.RoutineExerciseViewSet)
+router.register('exercise-sets', views.ExerciseSetViewSet)
 
 urlpatterns = [
-    path('users/', UserList.as_view(), name='user-list'),
-    path('users/<int:pk>/', UserDetail.as_view(), name='user-detail'),
-    path('exercises/', ExerciseList.as_view(), name='exercise-list'),
-    path('exercises/<int:pk>/', ExerciseDetail.as_view(), name='exercise-detail'),
-    path('routines/', RoutineList.as_view(), name='routine-list'),
-    path('routines/<int:pk>/', RoutineDetail.as_view(), name='routine-detail'),
+    path('', include(router.urls)),
 ]

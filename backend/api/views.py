@@ -1,30 +1,29 @@
-from django.shortcuts import render
-from rest_framework import generics
-from .models import User, Exercise, Routine
-from .serializers import UserSerializer, ExerciseSerializer, RoutineSerializer
+from rest_framework import viewsets
+from .models import User, Exercise, Routine, RoutineSession, RoutineExercise, ExerciseSet
+from .serializers import UserSerializer, ExerciseSerializer, RoutineSerializer, RoutineSessionSerializer, ExerciseSetSerializer, RoutineExerciseSerializer
 
 # Create your views here.
 
-class UserList(generics.ListCreateAPIView):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-class ExerciseList(generics.ListCreateAPIView):
+class ExerciseViewSet(viewsets.ModelViewSet):
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
 
-class ExerciseDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Exercise.objects.all()
-    serializer_class = ExerciseSerializer
-
-class RoutineList(generics.ListCreateAPIView):
+class RoutineViewSet(viewsets.ModelViewSet):
     queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
 
-class RoutineDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Routine.objects.all()
-    serializer_class = RoutineSerializer
+class RoutineSessionViewSet(viewsets.ModelViewSet):
+    queryset = RoutineSession.objects.all()
+    serializer_class = RoutineSessionSerializer
+
+class ExerciseSetViewSet(viewsets.ModelViewSet):
+    queryset = ExerciseSet.objects.all()
+    serializer_class = ExerciseSetSerializer
+
+class RoutineExerciseViewSet(viewsets.ModelViewSet):
+    queryset = RoutineExercise.objects.all()
+    serializer_class = RoutineExerciseSerializer
