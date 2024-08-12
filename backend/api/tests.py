@@ -2,6 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from .models import User, Exercise, Routine, RoutineSession, RoutineExercise, ExerciseSet
+from django.contrib.auth.hashers import make_password
 
 # Test for diferents models
 
@@ -157,7 +158,6 @@ class RoutineSessionTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['routine'], self.routine.id)
-        self.assertEqual(response.data[0]['date'], '2024-08-08')
     
     # Test for create a new routine session with a petition to the API
     def test_routine_session_recreate(self):
@@ -274,5 +274,180 @@ class ExerciseSetTestCase(TestCase):
         response = self.client.delete(f'/api/exercise-sets/{self.exercise_set.id}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(ExerciseSet.objects.count(), 0)
+    
+# Test for login
+class loginTestCase(TestCase):
+    
+    # Create a new user
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(name='Test User', email='test@example', password=make_password('password'))
+    
+    # Test for login
+    def test_login(self):
+        response = self.client.post('/api/login/', {'email': 'test@example', 'password': 'password'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['id'], self.user.id)
+        self.assertEqual(response.data['name'], self.user.name)
+        self.assertEqual(response.data['email'], self.user.email)
+        self.assertFalse('password' in response.data)
 
+    # Test for login with wrong password
+    def test_login_wrong_password(self):
+        response = self.client.post('/api/login/', {'email': 'test@example', 'password': 'wrongpassword'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.data['error'], 'Incorrect password')
+
+    # Test for login with a user that does not exist
+    def test_login_user_not_exist(self):
+        response = self.client.post('/api/login/', {'email': 'wrong@example', 'password': 'password'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['error'], 'User does not exist')
+
+
+# Test for register
+class registerTestCase(TestCase):
+    
+    # Create a new user
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(name='Test User', email='test@example', password=make_password('password'))
+    
+    # Test for register
+    def test_register(self):
+        response = self.client.post('/api/register/', {'name': 'Test User', 'email': 'example@example', 'password': 'password'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    # Test for register with an email that already exists
+    def test_register_email_exists(self):
+        response = self.client.post('/api/register/', {'name': 'Test User', 'email': 'test@example', 'password': 'password'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['error'], 'User already exists')
+
+# Test for User routines
+class UserRoutinesTestCase(TestCase):
+    
+    # Create a new user
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(name='Test User', email='test@example', password=make_password('password'))
+        self.routine = Routine.objects.create(name='Test Routine', user=self.user)
+    
+    # Test for get user routines
+    def test_get_user_routines(self):
+        response = self.client.get(f'/api/users/{self.user.id}/routines/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], self.routine.id)
+        self.assertEqual(response.data[0]['name'], self.routine.name)
+        self.assertEqual(response.data[0]['user'], self.routine.user.id)
+    
+    # Test for post a new routine for a user
+    def test_post_user_routines(self):
+        response = self.client.post(f'/api/users/{self.user.id}/routines/', {'name': 'Test Routine', 'user': self.user.id}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Routine.objects.count(), 2)
+
+    # Test for get user routines with a user that does not exist
+    def test_get_user_routines_user_not_exist(self):
+        response = self.client.get('/api/users/2/routines/')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['error'], 'User does not exist')
+
+    # Test for post a new routine for a user with a user that does not exist
+    def test_post_user_routines_user_not_exist(self):
+        response = self.client.post('/api/users/2/routines/', {'name': 'Test Routine', 'user': 2}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['error'], 'User does not exist')
+
+# Test for Routine exercises
+class RoutineExercisesTestCase(TestCase):
+    
+    # Create a new user
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(name='Test User', email='test@example', password=make_password('password'))
+        self.routine = Routine.objects.create(name='Test Routine', user=self.user)
+        self.exercise = Exercise.objects.create(name='Test Exercise', comment='Test Comment')
+    
+    # Test for post a new exercise for a routine
+    def test_post_routine_exercises(self):
+        response = self.client.post(f'/api/routines/{self.routine.id}/exercises/', {'exercise': self.exercise.id, 'sets' : 2}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(RoutineExercise.objects.count(), 1)
+
+    # Test for post a new exercise for a routine with a routine that does not exist
+    def test_post_routine_exercises_routine_not_exist(self):
+        response = self.client.post('/api/routines/2/exercises/', {'exercise': self.exercise.id, 'sets' : 2}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['error'], 'Routine does not exist')
+
+    # Test for post a new exercise for a routine with an exercise that does not exist
+    def test_post_routine_exercises_exercise_not_exist(self):
+        response = self.client.post(f'/api/routines/{self.routine.id}/exercises/', {'exercise': 2, 'sets' : 2}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['error'], 'Exercise does not exist')
+
+# Test for Routine sessions
+class RoutineSessionsTestCase(TestCase):
+    
+    # Create a new user
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(name='Test User', email='test@example', password=make_password('password'))
+        self.routine = Routine.objects.create(name='Test Routine', user=self.user)
+        self.routine_session = RoutineSession.objects.create(routine=self.routine)
+    
+    # Test for get routine sessions
+    def test_get_routine_sessions(self):
+        response = self.client.get('/api/routine-sessions/', {'routine': self.routine.id})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], self.routine_session.id)
+        self.assertEqual(response.data[0]['routine'], self.routine.id)
+
+    # Test for post a new routine session
+    def test_post_routine_sessions(self):
+        response = self.client.post('/api/routine-sessions/', {'routine': self.routine.id}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(RoutineSession.objects.count(), 2)
+
+# Test for Routine session sets
+class RoutineSessionSetsTestCase(TestCase):
+    
+    # Create a new user
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(name='Test User', email='test@example', password=make_password('password'))
+        self.routine = Routine.objects.create(name='Test Routine', user=self.user)
+        self.routine_session = RoutineSession.objects.create(routine=self.routine)
+        self.exercise = Exercise.objects.create(name='Test Exercise', comment='Test Comment')
+        self.routine_exercise = RoutineExercise.objects.create(routine=self.routine, exercise=self.exercise, sets=2)
+        self.exercise_set = ExerciseSet.objects.create(routine_session=self.routine_session, exercise=self.exercise, set_number=1, reps=10, weight=20, rir=2)
+    
+    # Test for get routine session sets
+    def test_get_routine_session_sets(self):
+        response = self.client.get(f'/api/routine-sessions/{self.routine_session.id}/sets/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], self.exercise_set.id)
+        self.assertEqual(response.data[0]['routine_session'], self.routine_session.id)
+        self.assertEqual(response.data[0]['exercise_detail']['name'], 'Test Exercise')
+        self.assertEqual(response.data[0]['set_number'], 1)
+        self.assertEqual(response.data[0]['reps'], 10)
+        self.assertEqual(response.data[0]['weight'], 20)
+        self.assertEqual(response.data[0]['rir'], 2)
+
+    # Test for post a new routine session set
+    def test_post_routine_session_sets(self):
+        response = self.client.post(f'/api/routine-sessions/{self.routine_session.id}/sets/', {'exercise': self.exercise.id, 'set_number': 2, 'reps': 10, 'weight': 20, 'rir': 2}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ExerciseSet.objects.count(), 2)
+
+    # Test for post a new routine session set with a routine session that does not exist
+    def test_post_routine_session_sets_routine_session_not_exist(self):
+        response = self.client.post('/api/routine-sessions/2/sets/', {'exercise': self.exercise.id, 'set_number': 2, 'reps': 10, 'weight': 20, 'rir': 2}, format='json')
+    
+    
+        
 

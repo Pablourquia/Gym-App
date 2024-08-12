@@ -13,8 +13,8 @@ class ExerciseSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'comment']
 
 class RoutineExerciseSerializer(serializers.ModelSerializer):
-    exercise = serializers.PrimaryKeyRelatedField(queryset=Exercise.objects.all())  # Para aceptar IDs de Exercise
-    exercise_detail = ExerciseSerializer(source='exercise', read_only=True)  # Para mostrar detalles del Exercise en la respuesta
+    exercise = serializers.PrimaryKeyRelatedField(queryset=Exercise.objects.all())
+    exercise_detail = ExerciseSerializer(source='exercise', read_only=True)  
 
     class Meta:
         model = RoutineExercise
