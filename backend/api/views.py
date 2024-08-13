@@ -4,7 +4,7 @@ from .serializers import UserSerializer, ExerciseSerializer, RoutineSerializer, 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 
 # Create your views here.
 
@@ -58,7 +58,7 @@ class RegisterView(APIView):
         if User.objects.filter(email=email).exists():
             return Response({'error': 'User already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = User(name=name, email=email, password=password, photo=photo)
+        user = User(name=name, email=email, password=make_password(password), photo=photo)
         user.save()
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
