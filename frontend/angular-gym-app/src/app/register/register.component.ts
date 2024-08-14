@@ -5,17 +5,18 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css'
 })
 
-export class LoginComponent {
+export class RegisterComponent {
   
   email: string = '';
   password: string = '';
+  name: string = '';
   errorMessage: string = '';
 
   constructor(
@@ -23,20 +24,16 @@ export class LoginComponent {
     private router: Router
   ) { }
 
-  login() {
-    console.log("Entra en login de login.component.ts");
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
+  register() {
+    this.authService.register({ name: this.name, email: this.email, password: this.password }).subscribe({
       next: () => {
-        console.log('User is logged in');
+        console.log('User is logged register');
         this.router.navigate(['/main']);
       },
       error: (error) => {
         console.error(error);
-        if (error.status === 401) {
-          this.errorMessage = 'Incorrect password';
-        }
-        else if (error.status === 404) {
-          this.errorMessage = 'User not exists';
+        if (error.status === 400) {
+          this.errorMessage = 'User already exists';
         }
         else {
           this.errorMessage = 'Unknown error';
