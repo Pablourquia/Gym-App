@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
 @Injectable({
@@ -16,6 +16,7 @@ export class AuthService {
         if (response.status === 200) {
           localStorage.setItem('name', response.body?.name);
           localStorage.setItem('email', response.body?.email);
+          localStorage.setItem('id', response.body?.id);
         } else {
           throw new Error(response.body?.message || 'Unknown error');
         }
@@ -29,6 +30,7 @@ export class AuthService {
         if (response.status === 201) {
           localStorage.setItem('name', response.body?.name);
           localStorage.setItem('email', response.body?.email);
+          localStorage.setItem('id', response.body?.id);
         } else {
           throw new Error(response.body?.message || 'Unknown error');
         }
@@ -38,5 +40,14 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!localStorage.getItem('email');
+  }
+
+  logout() {
+    localStorage.removeItem('name');
+    localStorage.removeItem('email');
+  }
+
+  getId(): string {
+    return localStorage.getItem('id') || '';
   }
 }

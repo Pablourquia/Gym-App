@@ -1,0 +1,17 @@
+<app-navbar></app-navbar>
+
+<div class="component">
+    <div class="title">
+        <h1>Create a new routine</h1>
+    </div>
+    <div class="routine">
+        <form action="#" method="POST">
+            <label for="routineName" class="label">Routine Name:  </label>
+            <input id="routineName" [(ngModel)]="routineName" name="routineName" class="input" type="text" required>
+            <button (click)="createRoutine()" type="submit" class="addExercise">Add Exercise</button>
+        </form>
+    </div>
+    <div *ngIf="errorMessage" class="mb-4 text-sm text-red-600">
+        {{ errorMessage }}
+    </div>
+</div>

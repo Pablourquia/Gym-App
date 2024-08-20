@@ -1,0 +1,37 @@
+<app-navbar></app-navbar>
+<div class="container">
+    <div class="title">
+        <h1> Historical Routines</h1>
+    </div>
+    <div class="box">
+        <div class="title2">
+            <h2>Add new routine session</h2>
+        </div>
+        <div class="routine">
+            <form method="POST">
+                <label for="routineName" class="label">Routine Name: </label>
+                <select id="routineName" [(ngModel)]="routineName" name="routineName" class="input" required>
+                    <option *ngFor="let routine of routines" [value]="routine.name">{{ routine.name }}</option>
+                </select>
+                <button (click)="createRoutineSession()" type="submit" class="addExercise">Add session</button>
+            </form>
+        </div>
+    </div>
+    <div *ngIf="errorMessage" class="mb-4 text-sm text-red-600">
+        {{ errorMessage }}
+    </div>
+    <div class="routines">
+        <div class="routine-header">
+          <p>Date</p>
+          <p>Routine Name</p>
+          <p>Actions</p>
+        </div>
+        <ng-container *ngFor="let session of routinesSessions">
+          <div class="routine-row">
+            <p class="session-date">{{ session.date | date: 'longDate' }}</p>
+            <p class="session-name">{{ session.routine }}</p>
+            <button (click)="deleteSession(session.id)" class="delete-button">Delete</button> <!-- Botón para eliminar -->
+          </div>
+        </ng-container>
+      </div>
+</div>

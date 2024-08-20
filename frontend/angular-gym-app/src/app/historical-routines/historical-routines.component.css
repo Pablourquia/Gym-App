@@ -1,0 +1,132 @@
+.container {
+    background-color: rgb(61, 59, 75);
+    padding: 20px;
+    margin: 0;
+    min-height: 100vh;
+    min-width: 100vw;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title, .title2 {
+    color: white;
+    margin-bottom: 20px;
+    font-family: Verdana, sans-serif;
+    text-align: center;
+}
+
+.title {
+    font-size: 2em;
+}
+
+.title2 {
+    font-size: 1.5em;
+}
+
+.box {
+    font-family: Verdana, sans-serif;
+    background-color: rgb(43, 31, 122);
+    color: white;
+    border-radius: 10px;
+    border: 2px solid black;
+    padding: 20px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.input {
+    width: calc(100% - 50px);
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid white;
+    background-color: rgb(61, 59, 75);
+    box-sizing: border-box;
+    font-family: 'Verdana', sans-serif;
+}
+
+.label {
+    display: inline-block;
+    padding-right: 30px;
+    font-family: Verdana, sans-serif;
+    margin-bottom: 10px;
+}
+
+.routines {
+    display: grid;
+    grid-template-columns: 1fr 2fr 0.5fr;
+    gap: 10px;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgb(61, 59, 75);
+    border-radius: 10px;
+}
+
+.routine-header {
+    display: contents;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.routine-row {
+    display: contents;
+}
+
+.session-date, .session-name {
+    padding: 10px 15px;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.session-date {
+    background-color: rgb(85, 65, 165);
+}
+
+.session-name {
+    background-color: rgb(43, 31, 122);
+}
+
+.delete-button {
+    background-color: #ff4c4c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.delete-button:hover {
+    background-color: #ff0000;
+}
+
+.addExercise {
+    background-color: #FFA500;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 20px;
+}
+
+.addExercise:hover {
+    background-color: #FF8C00;
+}
+
+.addExercise:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.5);
+}

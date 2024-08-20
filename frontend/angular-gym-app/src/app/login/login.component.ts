@@ -24,7 +24,6 @@ export class LoginComponent {
   ) { }
 
   login() {
-    console.log("Entra en login de login.component.ts");
     this.authService.login({ email: this.email, password: this.password }).subscribe({
       next: () => {
         console.log('User is logged in');
@@ -43,5 +42,9 @@ export class LoginComponent {
         }
       }
     });
+  }
+
+  register() {
+    this.router.navigate(['/register']);
   }
 }

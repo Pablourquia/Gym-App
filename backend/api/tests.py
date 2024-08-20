@@ -209,7 +209,7 @@ class RoutineExerciseTestCase(TestCase):
         response = self.client.post('/api/routine-exercises/', {'routine': self.routine.id, 'exercise': self.exercise.id, 'sets': 3}, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(RoutineExercise.objects.count(), 2)
-    
+
     # Test for update routine exercise
     def test_routine_exercise_update(self):
         response = self.client.put(f'/api/routine-exercises/{self.routine_exercise.id}/', {'routine': self.routine.id, 'exercise': self.exercise.id, 'sets': 4}, format='json')
@@ -344,9 +344,15 @@ class UserRoutinesTestCase(TestCase):
     
     # Test for post a new routine for a user
     def test_post_user_routines(self):
-        response = self.client.post(f'/api/users/{self.user.id}/routines/', {'name': 'Test Routine', 'user': self.user.id}, format='json')
+        response = self.client.post(f'/api/users/{self.user.id}/routines/', {'name': 'Test Routine 1', 'user': self.user.id}, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Routine.objects.count(), 2)
+
+    # Test for post a new routine for a user with a routine that already exists
+    def test_post_user_routines_routine_exists(self):
+        response = self.client.post(f'/api/users/{self.user.id}/routines/', {'name': 'Test Routine', 'user': self.user.id}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['error'], 'Routine already exists')
 
     # Test for get user routines with a user that does not exist
     def test_get_user_routines_user_not_exist(self):
@@ -375,6 +381,13 @@ class RoutineExercisesTestCase(TestCase):
         response = self.client.post(f'/api/routines/{self.routine.id}/exercises/', {'exercise': self.exercise.id, 'sets' : 2}, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(RoutineExercise.objects.count(), 1)
+
+    # Test for post the same exercise for a routine, does not work
+    def test_post_routine_exercises_same_exercise(self):
+        response = self.client.post(f'/api/routines/{self.routine.id}/exercises/', {'exercise': self.exercise.id, 'sets' : 2}, format='json')
+        response = self.client.post(f'/api/routines/{self.routine.id}/exercises/', {'exercise': self.exercise.id, 'sets' : 2}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data['error'], 'Exercise already exists for the routine')
 
     # Test for post a new exercise for a routine with a routine that does not exist
     def test_post_routine_exercises_routine_not_exist(self):

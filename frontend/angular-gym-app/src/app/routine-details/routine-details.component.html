@@ -1,0 +1,32 @@
+<app-navbar></app-navbar>
+
+<div class="container">
+    <div class="title">
+        <h1>{{ routine.name }}</h1>
+    </div>
+    <div class="routines">
+        <div *ngFor="let exercise of exercises; let i= index">
+            <div class="routine-title">
+                <p>Ejercicio {{i + 1}}</p>
+                <p>{{ exercise.exercise_detail.name }}</p>
+                <p>Número de series: {{ exercise.sets }}</p>
+                <p>Comentario: {{ exercise.exercise_detail.comment }}</p>
+                <button (click)="removeExercise(exercise.exercise_detail.id)" class="delete-button">Delete</button>
+            </div>
+        </div>
+    </div>
+    <div class="routine">
+        <form action="routine-details" method="POST">
+            <label for="exerciseName" class="label">Exercise Name: </label>
+            <input id="exerciseName" [(ngModel)]="exerciseName" name="exerciseName" class="input" type="text" required>
+            <label for="sets" class="label">Sets: </label>
+            <input id="sets" [(ngModel)]="sets" name="sets" class="input" type="number" required>
+            <label for="comment" class="label">Comment: </label>
+            <input id="comment" [(ngModel)]="comment" name="comment" class="input" type="text" required>
+            <button (click)="addExercise()" type="submit" class="addExercise">Add Exercise</button>
+        </form>
+    </div>
+    <div *ngIf="errorMessage" class="mb-4 text-sm text-red-600">
+        {{ errorMessage }}
+    </div>
+</div>

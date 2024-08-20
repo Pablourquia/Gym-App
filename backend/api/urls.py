@@ -16,6 +16,7 @@ urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'),
     path('users/<int:user_id>/routines/', views.UserRoutinesView.as_view(), name='user-routines'),
     path('routines/<int:routine_id>/exercises/', views.RoutineExercisesView.as_view(), name='routine-exercises'),
+    path('routines/<int:routine_id>/exercises/<int:exercise_id>/', views.RoutineExercisesView.as_view(), name='remove-routine-exercise'),
     path('routine-sessions/', views.RoutineSessionsView.as_view(), name='routine-sessions'),
     path('routine-sessions/<int:session_id>/sets/', views.RoutineSessionSetsView.as_view(), name='routine-session-sets'),
     

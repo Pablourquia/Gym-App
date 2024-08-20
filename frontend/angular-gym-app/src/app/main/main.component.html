@@ -1,2 +1,16 @@
 <app-navbar></app-navbar>
-<p>main works!</p>
+
+<div class="container">
+    <div class="title">
+        <h1>Your routines</h1>
+    </div>
+    <div class="routines">
+        <div *ngFor="let routine of routines" class="routine-container">
+            <div class="routine-title">
+                <a (click)="goToRoutineDetail(routine)" class="routine-link">{{ routine.name }}</a>
+                <br>
+                <button (click)="deleteRoutine(routine.id)" class="delete-button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
