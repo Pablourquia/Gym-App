@@ -3,23 +3,8 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RoutineService } from '../services/routine.service';
-import { AuthService } from '../services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
-
-interface ExerciseDetail {
-  id: number;
-  name: string;
-  comment: string;
-}
-
-
-interface Exercise {
-  id: number;
-  routine: number;
-  exercise: number;
-  exercise_detail: ExerciseDetail;
-  sets: number;
-}
+import { Exercise } from '../models/models';
 
 @Component({
   selector: 'app-routine-details',

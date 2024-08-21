@@ -179,6 +179,13 @@ class RoutineSessionSetsView(APIView):
         reps = request.data.get('reps')
         weight = request.data.get('weight')
         rir = request.data.get('rir')
+        if ExerciseSet.objects.filter(routine_session=session, exercise=exercise, set_number=set_number).exists():
+            exercise_set = ExerciseSet.objects.get(routine_session=session, exercise=exercise, set_number=set_number)
+            exercise_set.reps = reps
+            exercise_set.weight = weight
+            exercise_set.rir = rir
+            exercise_set.save()
+            return Response({'id': exercise_set.id, 'routine_session': exercise_set.routine_session.id, 'exercise': exercise_set.exercise.id, 'set_number': exercise_set.set_number, 'reps': exercise_set.reps, 'weight': exercise_set.weight, 'rir': exercise_set.rir}, status=status.HTTP_200_OK)
         exercise_set = ExerciseSet(routine_session=session, exercise_id=exercise, set_number=set_number, reps=reps, weight=weight, rir=rir)
         exercise_set.save()
         return Response({'id': exercise_set.id, 'routine_session': exercise_set.routine_session.id, 'exercise': exercise_set.exercise.id, 'set_number': exercise_set.set_number, 'reps': exercise_set.reps, 'weight': exercise_set.weight, 'rir': exercise_set.rir}, status=status.HTTP_201_CREATED)

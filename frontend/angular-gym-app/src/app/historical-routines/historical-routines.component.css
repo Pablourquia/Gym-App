@@ -97,6 +97,16 @@
     background-color: rgb(43, 31, 122);
 }
 
+.session-date:hover {
+    background-color: rgb(65, 65, 165);
+    cursor: pointer;
+}
+
+.session-name:hover {
+    background-color: rgb(53, 41, 132);
+    cursor: pointer;
+}
+
 .delete-button {
     background-color: #ff4c4c;
     color: white;

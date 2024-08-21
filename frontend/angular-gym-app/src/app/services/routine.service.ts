@@ -3,6 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, tap, forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 interface Session {
   id: number;
@@ -53,6 +54,10 @@ export class RoutineService {
 
   getRoutines(user_id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/users/${user_id}/routines/`);
+  }
+
+  getRoutine(routine_id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/routines/${routine_id}/`);
   }
 
   addExercise(exercise: { name: string, comment: string }, routine_id: number, sets: number): Observable<any> {
@@ -112,6 +117,10 @@ export class RoutineService {
     );
   }
 
+  getSession(session_id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/routine-sessions/${session_id}/`);
+  }
+
   deleteSession(session_id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/routine-sessions/${session_id}/`, { observe: 'response' }).pipe(
       tap((response: HttpResponse<any>) => {
@@ -157,4 +166,53 @@ export class RoutineService {
     );
   }
   
+  createRoutineSessionSet(routine_session_id: number, exercise_id: number, set_number: number, reps: number, weight: number, rir: number) : Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/routine-sessions/${routine_session_id}/sets/`, { exercise: exercise_id, set_number, reps, weight, rir }, { observe: 'response' }).pipe(
+      tap((response: HttpResponse<any>) => {
+        if (response.status === 201 || response.status === 200) {
+          console.log('Routine session set created successfully');
+        } else {
+          throw new Error(response.body?.message || 'Unknown error');
+        }
+      })
+    );
+  }
+
+  getRoutineSessionSet(session_id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/routine-sessions/${session_id}/sets/`);
+  }
+  
+  getPreviousRoutineSessionId(routine_id: number, currentSessionId: number): Observable<number | null> {
+    return this.http.get<any[]>(`${this.apiUrl}/routine-sessions/`).pipe(
+      map(sessions => sessions.filter(session => session.routine === routine_id)),
+      map(sessions => {
+        const sortedSessions = sessions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        const currentSession = sessions.find(session => session.id === currentSessionId);
+        if (!currentSession) {
+          return null;
+        }
+        const currentSessionDate = new Date(currentSession.date).getTime();
+        const previousSession = sortedSessions.find(session => new Date(session.date).getTime() < currentSessionDate);
+        return previousSession ? previousSession.id : null;
+      }),
+    );
+  }
+  
+  getLastSessionSetsForExercise(routine_id: number, exercise_id: number, currentSessionId: number): Observable<{ set_number: number, weight: number, reps: number, rir: number }[]> {
+    return this.getPreviousRoutineSessionId(routine_id, currentSessionId).pipe(
+      switchMap(previousSessionId => {
+        if (!previousSessionId) {
+          return of([]);
+        }
+        return this.getRoutineSessionSet(previousSessionId);
+      }),
+      map(sets => {
+        if (!Array.isArray(sets)) {
+          console.error('Invalid sets:', sets);
+          return [];
+        }
+        return sets.filter(set => set.exercise === exercise_id);
+      }),
+    );
+  }
 }

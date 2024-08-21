@@ -457,6 +457,21 @@ class RoutineSessionSetsTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ExerciseSet.objects.count(), 2)
 
+    # Test for post a new routine session set with a set that already exists
+    def test_post_routine_session_sets_set_exists(self):
+        response = self.client.post(f'/api/routine-sessions/{self.routine_session.id}/sets/', {'exercise': self.exercise.id, 'set_number': 2, 'reps': 10, 'weight': 20, 'rir': 2}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ExerciseSet.objects.count(), 2)
+        self.assertEqual(response.data['set_number'], 2)
+        self.assertEqual(response.data['weight'], 20)
+        self.assertEqual(response.data['reps'], 10)
+        response = self.client.post(f'/api/routine-sessions/{self.routine_session.id}/sets/', {'exercise': self.exercise.id, 'set_number': 2, 'reps': 12, 'weight': 30, 'rir': 2}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(ExerciseSet.objects.count(), 2)
+        self.assertEqual(response.data['set_number'], 2)
+        self.assertEqual(response.data['weight'], 30)
+        self.assertEqual(response.data['reps'], 12)
+
     # Test for post a new routine session set with a routine session that does not exist
     def test_post_routine_session_sets_routine_session_not_exist(self):
         response = self.client.post('/api/routine-sessions/2/sets/', {'exercise': self.exercise.id, 'set_number': 2, 'reps': 10, 'weight': 20, 'rir': 2}, format='json')

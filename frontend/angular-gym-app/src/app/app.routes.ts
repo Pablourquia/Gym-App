@@ -5,6 +5,7 @@ import { MainComponent } from './main/main.component';
 import { CreateRoutineComponent } from './create-routine/create-routine.component';
 import { RoutineDetailsComponent } from './routine-details/routine-details.component';
 import { HistoricalRoutinesComponent } from './historical-routines/historical-routines.component';
+import { SessionCharacteristicsComponent } from './session-characteristics/session-characteristics.component';
 import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
@@ -39,6 +40,11 @@ export const routes: Routes = [
     {
         path: "historical-routines",
         component: HistoricalRoutinesComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: "session-characteristics/:id",
+        component: SessionCharacteristicsComponent,
         canActivate: [AuthGuard]
     }
 ];

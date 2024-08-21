@@ -28,8 +28,8 @@
         </div>
         <ng-container *ngFor="let session of routinesSessions">
           <div class="routine-row">
-            <p class="session-date">{{ session.date | date: 'longDate' }}</p>
-            <p class="session-name">{{ session.routine }}</p>
+            <a (click)="sessionCharacteristics(session.id)" class="session-date">{{ session.date | date: 'longDate' }}</a>
+            <a (click)="sessionCharacteristics(session.id)" class="session-name">{{ session.routine }}</a>
             <button (click)="deleteSession(session.id)" class="delete-button">Delete</button> <!-- Botón para eliminar -->
           </div>
         </ng-container>

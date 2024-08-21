@@ -8,7 +8,7 @@
         <form action="#" method="POST">
             <label for="routineName" class="label">Routine Name:  </label>
             <input id="routineName" [(ngModel)]="routineName" name="routineName" class="input" type="text" required>
-            <button (click)="createRoutine()" type="submit" class="addExercise">Add Exercise</button>
+            <button (click)="createRoutine()" type="submit" class="addExercise">Add Routine</button>
         </form>
     </div>
     <div *ngIf="errorMessage" class="mb-4 text-sm text-red-600">

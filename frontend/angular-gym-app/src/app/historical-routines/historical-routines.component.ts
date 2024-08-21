@@ -6,12 +6,7 @@ import { CommonModule } from '@angular/common';
 import { RoutineService } from '../services/routine.service';
 import { AuthService } from '../services/auth.service';
 import { forkJoin } from 'rxjs';
-
-interface RoutineSession {
-  routine: string;
-  date: string;
-  id: number;
-}
+import { RoutineSession } from '../models/models';
 
 @Component({
   selector: 'app-historical-routines',
@@ -103,4 +98,7 @@ export class HistoricalRoutinesComponent {
     });
   }
 
+  sessionCharacteristics(sessionId: number) {
+    this.router.navigate(['/session-characteristics', sessionId]);
+  }
 }
