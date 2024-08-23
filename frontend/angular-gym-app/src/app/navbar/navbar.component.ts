@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  isOpen = false;
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -22,10 +25,6 @@ export class NavbarComponent {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
-  }
-
-  userDetails() {
-    this.router.navigate(['/main']);
   }
 
   isActive(route: string): boolean {
