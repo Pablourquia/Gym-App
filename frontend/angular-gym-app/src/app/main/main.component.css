@@ -6,44 +6,63 @@
     min-width: 100vw;
     font-family: 'Arial', sans-serif;
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .title {
     color: white;
-    font-size: 2em;
+    font-size: 2.5em;
     margin-bottom: 20px;
     font-family: Verdana, sans-serif;
     text-align: center;
 }
 
 .routines {
-    display: grid;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
-    justify-content: center;
-    min-width: 80vw;
-    min-height: 80vh;
-    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
 }
 
 .routine-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 300px;
-}
-
-.routine-title {
-    font-family: Verdana, sans-serif;
     background-color: rgb(43, 31, 122);
     color: white;
     border-radius: 10px;
     border: 2px solid black;
     padding: 20px;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.routine-title {
+    font-family: Verdana, sans-serif;
+    color: white;
+    background-color: rgb(43, 31, 122);
+    border-radius: 10px;
+    padding: 15px;
     margin: 0;
     width: 100%;
     box-sizing: border-box;
-    text-align: center;
     cursor: pointer;
+    font-size: 1.2em;
+}
+
+.routine-title:hover {
+    background-color: rgb(34, 24, 104);
+    transition: background-color 0.3s ease;
 }
 
 .delete-button {
@@ -55,8 +74,32 @@
     cursor: pointer;
     font-size: 0.9em;
     margin-top: 10px;
+    transition: background-color 0.3s ease;
 }
 
 .delete-button:hover {
     background-color: #ff0000;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .routines {
+        padding: 10px;
+    }
+
+    .routine-container {
+        width: 100%;
+        max-width: none;
+        padding: 15px;
+    }
+
+    .routine-title {
+        font-size: 1.1em;
+        padding: 10px;
+    }
+
+    .delete-button {
+        padding: 8px;
+        font-size: 0.85em;
+    }
 }
