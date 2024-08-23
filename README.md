@@ -10,6 +10,7 @@
 - [Badges](#badges)
 - [Index](#index)
 - [Description](#description)
+- [Deployment](#deployment)
 - [Characteristics](#characteristics)
 - [Developers](#developers)
 - [Technologies](#technologies)
@@ -17,6 +18,10 @@
 ## Description
 
 *Gym-App* is a project that allows users to track their workouts and progress. 
+
+## Deployment
+
+The project is deployed in Heroku. You can access it [here](https://gym-app-ydqb.vercel.app/login)
 
 ## Characteristics
 
